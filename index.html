@@ -1348,6 +1348,69 @@
         </div>
       `;
     }
+function renderUpgradeForMoreMoneyCard() {
+  const currentKey = state.userData?.membershipTier || 'standard';
+
+  // numbers match your text:
+  // Standard depth 2 => 6 people
+  // Diamond depth 9 => 1,022 people
+  const standardPeople = peopleUnderUser(TIERS.standard.depth);
+  const diamondPeople  = peopleUnderUser(TIERS.diamond.depth);
+
+  const dailyStandard = standardPeople * AVG_COMMISSION_PER_JOB;     // 6 * 20 = 120
+  const dailyDiamond  = diamondPeople  * AVG_COMMISSION_PER_JOB;     // 1022 * 20 = 20,440
+  const monthlyDiamond = dailyDiamond * 30;                          // 613,200
+
+  return `
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="text-lg font-extrabold text-gray-900">Upgrade for more money</h3>
+          <p class="text-sm text-gray-600 mt-1 font-black leading-relaxed">
+            In Standard you only get commission from <b>${fmt(standardPeople)}</b> people. In Diamond your commission is from <b>${fmt(diamondPeople)}</b> people.
+          </p>
+          <p class="text-sm text-gray-600 mt-2 font-black leading-relaxed">
+            At average of <b>₦${fmt(AVG_COMMISSION_PER_JOB)}</b> per job, that’s <b>₦${fmt(dailyDiamond)}</b> daily, over <b>₦${fmt(monthlyDiamond)}</b> monthly.
+          </p>
+          <p class="text-xs text-gray-500 mt-2 font-black">
+            (Assumes 1 job/day per person. Even if only 10% are active daily, it’s still scary money.)
+          </p>
+        </div>
+
+        <div class="shrink-0 bg-gray-900 text-white px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2">
+          ${icon('sparkles','w-4 h-4')} Upgrade
+        </div>
+      </div>
+
+      <div class="mt-5 grid sm:grid-cols-2 gap-3">
+        <div class="border border-gray-200 rounded-2xl p-4 bg-gray-50">
+          <p class="text-xs text-gray-500 font-black uppercase">Your Plan</p>
+          <p class="text-xl font-extrabold text-gray-900 mt-1">${TIERS[currentKey].name}</p>
+          <p class="text-sm text-gray-700 font-black mt-2">${fmt(standardPeople)} people</p>
+          <p class="text-sm text-gray-900 font-extrabold mt-1">≈ ₦${fmt(dailyStandard)}/day</p>
+        </div>
+
+        <div class="border border-green-200 rounded-2xl p-4 bg-green-50">
+          <p class="text-xs text-green-700 font-black uppercase">If You Go Diamond</p>
+          <p class="text-xl font-extrabold text-gray-900 mt-1">${TIERS.diamond.name}</p>
+          <p class="text-sm text-gray-700 font-black mt-2">${fmt(diamondPeople)} people</p>
+          <p class="text-sm text-gray-900 font-extrabold mt-1">≈ ₦${fmt(dailyDiamond)}/day</p>
+        </div>
+      </div>
+
+      <div class="mt-5 flex flex-col sm:flex-row gap-3">
+        <button data-nav="upgrade"
+          class="w-full sm:w-auto px-5 py-3 rounded-xl bg-green-600 text-white font-extrabold hover:bg-green-700 flex items-center justify-center gap-2">
+          ${icon('unlock','w-4 h-4')} Unlock More People
+        </button>
+        <button data-nav="upgrade"
+          class="w-full sm:w-auto px-5 py-3 rounded-xl bg-gray-900 text-white font-extrabold hover:bg-black flex items-center justify-center gap-2">
+          ${icon('sparkles','w-4 h-4')} Upgrade Now
+        </button>
+      </div>
+    </div>
+  `;
+}
 
     function renderNetwork() {
       const t = tier();
@@ -1405,6 +1468,7 @@
                   </button>
                 </div>
               `, 'bg-gradient-to-r from-blue-600 to-blue-500 text-white border-none rounded-2xl')}
+${renderUpgradeForMoreMoneyCard()}
 
               <div class="bg-gray-50 rounded-2xl border border-gray-200 p-2 overflow-auto min-h-[420px] flex justify-center relative shadow-inner">
                 <div class="min-w-[720px] flex justify-center pt-4">
